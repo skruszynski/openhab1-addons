@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
  * @author Pauli Anttila
  * @since 1.3.0
  */
+
+/* Added 3D and wireless input support in this class */
 public class EpsonProjectorDevice {
 
     public enum AspectRatio {
@@ -86,6 +88,59 @@ public class EpsonProjectorDevice {
 
     }
 
+    public enum Mode3D {
+        OFF(0x00),
+        ON(0x01);
+
+        private int value;
+        private static final Map<Integer, Mode3D> typesByValue = new HashMap<Integer, Mode3D>();
+
+        static {
+            for (Mode3D type : Mode3D.values()) {
+                typesByValue.put(type.value, type);
+            }
+        }
+
+        private Mode3D(int value) {
+            this.value = value;
+        }
+
+        public static Mode3D forValue(int value) {
+            return typesByValue.get(value);
+        }
+
+        public int toInt() {
+            return value;
+        }
+
+    }
+
+    public enum ViewingNotice3D {
+        OFF(0x00),
+        ON(0x01);
+
+        private int value;
+        private static final Map<Integer, ViewingNotice3D> typesByValue = new HashMap<Integer, ViewingNotice3D>();
+
+        static {
+            for (ViewingNotice3D type : ViewingNotice3D.values()) {
+                typesByValue.put(type.value, type);
+            }
+        }
+
+        private ViewingNotice3D(int value) {
+            this.value = value;
+        }
+
+        public static ViewingNotice3D forValue(int value) {
+            return typesByValue.get(value);
+        }
+
+        public int toInt() {
+            return value;
+        }
+    }
+
     public enum Source {
         COMPONENT(0x14),
         PC_DSUB(0x20),
@@ -93,6 +148,7 @@ public class EpsonProjectorDevice {
         HDMI2(0xA0),
         VIDEO(0x41),
         SVIDEO(0x42),
+        WIRELESSHD(0xD0),
         ERROR(0xFF);
 
         private int value;
@@ -162,6 +218,7 @@ public class EpsonProjectorDevice {
         COOLDOWN(0x03),
         STANDBYNETWORKON(0x04),
         ABNORMALSTANDBY(0x05),
+        WIRELESSSTANDBY(0x07),
         ERROR(0xFF);
 
         private int value;
@@ -574,6 +631,111 @@ public class EpsonProjectorDevice {
 
     public void setLuminance(Luminance value) throws EpsonProjectorException {
         sendCommand(String.format("LUMINANCE %02X", value.toInt()));
+    }
+
+    /*
+     * 3D Display
+     */
+
+    public Mode3D getMode3D() throws EpsonProjectorException {
+        int val = queryHexInt("3DIMENSION? 01");
+        Mode3D retval = Mode3D.forValue(val);
+        if (retval != null) {
+            return retval;
+        } else {
+            throw new EpsonProjectorException("Can't convert value" + val + " to Mode3D");
+        }
+    }
+
+    public void setMode3D(Mode3D value) throws EpsonProjectorException {
+        sendCommand(String.format("3DIMENSION 01 %02X", value.toInt()));
+    }
+
+    /*
+     * 3D Format
+     */
+
+    /*
+     * public Format3D getFormat3D() throws EpsonProjectorException {
+     * int val = queryHexInt("3DIMENSION? 03");
+     * Format3D retval = Format3D.forValue(val);
+     * if (retval != null) {
+     * return retval;
+     * } else {
+     * throw new EpsonProjectorException("Can't convert value" + val + " to Format3D");
+     * }
+     * }
+     */
+    public int getFormat3D() throws EpsonProjectorException {
+        return queryHexInt("3DIMENSION? 03");
+    }
+
+    public void setFormat3D(int value) throws EpsonProjectorException {
+        sendCommand(String.format("3DIMENSION 03 %02X", value));
+    }
+
+    /*
+     * 3D Brightness
+     */
+
+    /*
+     * public Brightness3D getBrightness3D() throws EpsonProjectorException {
+     * int val = queryHexInt("3DIMENSION? 05");
+     * Brightness3D retval = Brightness3D.forValue(val);
+     * if (retval != null) {
+     * return retval;
+     * } else {
+     * throw new EpsonProjectorException("Can't convert value" + val + " to Brightness3D");
+     * }
+     * }
+     */
+    public int getBrightness3D() throws EpsonProjectorException {
+        return queryHexInt("3DIMENSION? 05");
+    }
+
+    public void setBrightness3D(int value) throws EpsonProjectorException {
+        sendCommand(String.format("3DIMENSION 05 %02X", value));
+    }
+
+    /*
+     * 3D IR Emitter
+     */
+
+    /*
+     * public IREmitter3D getIREmitter3D() throws EpsonProjectorException {
+     * int val = queryHexInt("3DIMENSION? 06");
+     * IREmitter3D retval = IREmitter3D.forValue(val);
+     * if (retval != null) {
+     * return retval;
+     * } else {
+     * throw new EpsonProjectorException("Can't convert value" + val + " to IREmitter3D");
+     * }
+     * }
+     */
+    public int getIREmitter3D() throws EpsonProjectorException {
+        return queryHexInt("3DIMENSION? 06");
+    }
+
+    public void setIREmitter3D(int value) throws EpsonProjectorException {
+        sendCommand(String.format("3DIMENSION 06 %02X", value));
+    }
+
+    /*
+     * 3D Viewing Notice
+     */
+
+    public ViewingNotice3D getViewingNotice3D() throws EpsonProjectorException {
+        int val = queryHexInt("3DIMENSION? 07");
+        ViewingNotice3D retval = ViewingNotice3D.forValue(val);
+        if (retval != null) {
+            return retval;
+        } else {
+            throw new EpsonProjectorException("Can't convert value" + val + " to ViewingNotice3D");
+        }
+    }
+
+    public void setViewingNotice3D(ViewingNotice3D value) throws EpsonProjectorException {
+        sendCommand(String.format("3DIMENSION 07 %02X", value.toInt()));
     }
 
     /*

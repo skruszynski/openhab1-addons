@@ -22,6 +22,8 @@ import org.openhab.core.library.items.SwitchItem;
  * @author Pauli Anttila
  * @since 1.3.0
  */
+
+/* Added 3D Support */
 public enum EpsonProjectorCommandType {
 
     POWER("Power", SwitchItem.class),
@@ -59,6 +61,11 @@ public enum EpsonProjectorCommandType {
     MUTE("Mute", SwitchItem.class),
     HREVERSE("HorizontalReverse", SwitchItem.class),
     VREVERSE("VerticalReverse", SwitchItem.class),
+    MODE_3D("3DMode", SwitchItem.class),
+    FORMAT_3D("3DFormat", NumberItem.class),
+    BRIGHTNESS_3D("3DBrightness", NumberItem.class),
+    IR_EMITTER_3D("3DIREmitter", NumberItem.class),
+    VIEWING_NOTICE_3D("3DViewingNotice", SwitchItem.class),
     BACKGROUND("Background", StringItem.class),
     ERR_CODE("ErrCode", NumberItem.class),
     ERR_MESSAGE("ErrMessage", StringItem.class),;
@@ -82,14 +89,14 @@ public enum EpsonProjectorCommandType {
 
     /**
      * Procedure to validate command type string.
-     * 
+     *
      * @param commandTypeText
-     *            command string e.g. RawData, Command, Brightness
+     *                            command string e.g. RawData, Command, Brightness
      * @return true if item is valid.
      * @throws IllegalArgumentException
-     *             Not valid command type.
+     *                                      Not valid command type.
      * @throws InvalidClassException
-     *             Not valid class for command type.
+     *                                      Not valid class for command type.
      */
     public static boolean validateBinding(String commandTypeText, Class<? extends Item> itemClass)
             throws IllegalArgumentException, InvalidClassException {
@@ -111,12 +118,12 @@ public enum EpsonProjectorCommandType {
 
     /**
      * Procedure to convert command type string to command type class.
-     * 
+     *
      * @param commandTypeText
-     *            command string e.g. RawData, Command, Brightness
+     *                            command string e.g. RawData, Command, Brightness
      * @return corresponding command type.
      * @throws InvalidClassException
-     *             Not valid class for command type.
+     *                                   Not valid class for command type.
      */
     public static EpsonProjectorCommandType getCommandType(String commandTypeText) throws IllegalArgumentException {
 

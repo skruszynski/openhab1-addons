@@ -24,9 +24,12 @@ import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Color;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.ColorMode;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Gamma;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Luminance;
+/* Importing extra Mode3D and ViewingNotice3D */
+import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Mode3D;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.PowerStatus;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Source;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Switch;
+import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.ViewingNotice3D;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
@@ -200,6 +203,7 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
         lastProjectorStateUpdateTime = System.currentTimeMillis();
     }
 
+    /* Added new 3D commands */
     private State queryDataFromDevice(String deviceId, EpsonProjectorCommandType commmandType,
             Class<? extends Item> itemType) {
 
@@ -341,6 +345,21 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                 case VREVERSE:
                     Switch vReverse = remoteController.getVerticalReverse();
                     return vReverse == Switch.ON ? OnOffType.ON : OnOffType.OFF;
+                case MODE_3D:
+                    Mode3D mode3D = remoteController.getMode3D();
+                    return mode3D == Mode3D.ON ? OnOffType.ON : OnOffType.OFF;
+                case FORMAT_3D:
+                    int format3D = remoteController.getFormat3D();
+                    return new DecimalType(format3D);
+                case BRIGHTNESS_3D:
+                    int brightness3D = remoteController.getBrightness3D();
+                    return new DecimalType(brightness3D);
+                case IR_EMITTER_3D:
+                    int iremitter3D = remoteController.getIREmitter3D();
+                    return new DecimalType(iremitter3D);
+                case VIEWING_NOTICE_3D:
+                    ViewingNotice3D viewingNotice3D = remoteController.getViewingNotice3D();
+                    return viewingNotice3D == ViewingNotice3D.ON ? OnOffType.ON : OnOffType.OFF;
                 default:
                     logger.warn("Unknown '{}' command!", commmandType);
                     return null;
@@ -380,6 +399,7 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
         }
     }
 
+    /* Added new 3D commands */
     private void sendDataToDevice(String deviceId, EpsonProjectorCommandType commmandType, Command command) {
         DeviceConfig device = deviceConfigCache.get(deviceId);
 
@@ -515,6 +535,21 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                     break;
                 case VREVERSE:
                     remoteController.setVerticalReverse((command == OnOffType.ON ? Switch.ON : Switch.OFF));
+                    break;
+                case MODE_3D:
+                    remoteController.setMode3D(Mode3D.valueOf(command.toString()));
+                    break;
+                case FORMAT_3D:
+                    remoteController.setFormat3D(((DecimalType) command).intValue());
+                    break;
+                case BRIGHTNESS_3D:
+                    remoteController.setBrightness3D(((DecimalType) command).intValue());
+                    break;
+                case IR_EMITTER_3D:
+                    remoteController.setIREmitter3D(((DecimalType) command).intValue());
+                    break;
+                case VIEWING_NOTICE_3D:
+                    remoteController.setViewingNotice3D(ViewingNotice3D.valueOf(command.toString()));
                     break;
                 default:
                     logger.warn("Unknown '{}' command!", commmandType);
