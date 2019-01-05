@@ -20,12 +20,15 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.epsonprojector.EpsonProjectorBindingProvider;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.AspectRatio;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Background;
+import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Brightness3D;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Color;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.ColorMode;
+// Importing new 3D classes
+import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Display3D;
+import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Format3D;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Gamma;
+import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.IREmitter3D;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Luminance;
-/* Importing extra Mode3D and ViewingNotice3D */
-import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Mode3D;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.PowerStatus;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Source;
 import org.openhab.binding.epsonprojector.internal.EpsonProjectorDevice.Switch;
@@ -345,18 +348,18 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                 case VREVERSE:
                     Switch vReverse = remoteController.getVerticalReverse();
                     return vReverse == Switch.ON ? OnOffType.ON : OnOffType.OFF;
-                case MODE_3D:
-                    Mode3D mode3D = remoteController.getMode3D();
-                    return mode3D == Mode3D.ON ? OnOffType.ON : OnOffType.OFF;
+                case DISPLAY_3D:
+                    Display3D display3D = remoteController.getDisplay3D();
+                    return display3D == Display3D.ON ? OnOffType.ON : OnOffType.OFF;
                 case FORMAT_3D:
-                    int format3D = remoteController.getFormat3D();
-                    return new DecimalType(format3D);
+                    Format3D format3D = remoteController.getFormat3D();
+                    return new StringType(format3D.toString());
                 case BRIGHTNESS_3D:
-                    int brightness3D = remoteController.getBrightness3D();
-                    return new DecimalType(brightness3D);
+                    Brightness3D brightness3D = remoteController.getBrightness3D();
+                    return new StringType(brightness3D.toString());
                 case IR_EMITTER_3D:
-                    int iremitter3D = remoteController.getIREmitter3D();
-                    return new DecimalType(iremitter3D);
+                    IREmitter3D iremitter3D = remoteController.getIREmitter3D();
+                    return new StringType(iremitter3D.toString());
                 case VIEWING_NOTICE_3D:
                     ViewingNotice3D viewingNotice3D = remoteController.getViewingNotice3D();
                     return viewingNotice3D == ViewingNotice3D.ON ? OnOffType.ON : OnOffType.OFF;
@@ -536,17 +539,17 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                 case VREVERSE:
                     remoteController.setVerticalReverse((command == OnOffType.ON ? Switch.ON : Switch.OFF));
                     break;
-                case MODE_3D:
-                    remoteController.setMode3D(Mode3D.valueOf(command.toString()));
+                case DISPLAY_3D:
+                    remoteController.setDisplay3D(Display3D.valueOf(command.toString()));
                     break;
                 case FORMAT_3D:
-                    remoteController.setFormat3D(((DecimalType) command).intValue());
+                    remoteController.setFormat3D(Format3D.valueOf(command.toString()));
                     break;
                 case BRIGHTNESS_3D:
-                    remoteController.setBrightness3D(((DecimalType) command).intValue());
+                    remoteController.setBrightness3D(Brightness3D.valueOf(command.toString()));
                     break;
                 case IR_EMITTER_3D:
-                    remoteController.setIREmitter3D(((DecimalType) command).intValue());
+                    remoteController.setIREmitter3D(IREmitter3D.valueOf(command.toString()));
                     break;
                 case VIEWING_NOTICE_3D:
                     remoteController.setViewingNotice3D(ViewingNotice3D.valueOf(command.toString()));
